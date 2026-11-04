@@ -1,0 +1,110 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Management System</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #f1f5f9;
+            margin: 0;
+            padding: 40px;
+        }
+
+        .container {
+            max-width: 500px;
+            margin: auto;
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+
+        h1 {
+            text-align: center;
+            color: #2563eb;
+        }
+
+        input, button {
+            width: 100%;
+            padding: 12px;
+            margin-top: 12px;
+            box-sizing: border-box;
+        }
+
+        button {
+            background: #2563eb;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        #message {
+            text-align: center;
+            margin-top: 15px;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h1>Student Management System</h1>
+
+        <form id="studentForm">
+            <input type="text" id="name" placeholder="Student Name" required>
+
+            <input type="email" id="email" placeholder="Email Address" required>
+
+            <input type="text" id="course" placeholder="Course" required>
+
+            <button type="submit">Add Student</button>
+        </form>
+
+        <p id="message"></p>
+    </div>
+
+    <script>
+        const form = document.getElementById("studentForm");
+        const message = document.getElementById("message");
+
+        form.addEventListener("submit", async function(event) {
+            event.preventDefault();
+
+            const student = {
+                name: document.getElementById("name").value,
+                email: document.getElementById("email").value,
+                course: document.getElementById("course").value
+            };
+
+            try {
+                const response = await fetch("/api/students", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify(student)
+                });
+
+                const result = await response.json();
+
+                if (!response.ok) {
+                    throw new Error(result.error || "Unable to add student");
+                }
+
+                message.textContent = result.message;
+                message.style.color = "green";
+                form.reset();
+
+            } catch (error) {
+                message.textContent = error.message;
+                message.style.color = "red";
+            }
+        });
+    </script>
+
+</body>
+</html>
+
